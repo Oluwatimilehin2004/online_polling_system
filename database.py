@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import mysql.connector
+import pymysql as mysql
 
 class Database:
     def __init__(self):
