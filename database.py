@@ -1,23 +1,19 @@
-#!/usr/bin/python3
-import pymysql as mysql
+import mysql.connector
 
 class Database:
     def __init__(self):
         self.conn = mysql.connector.connect(
-            host = "mysql-3755b811-alustudent-042b.f.aivencloud.com",
-            user = "root",
-            password = "yourpassword",
-            database = "Online_Polling_System"
+            host="localhost",
+            user="polluser",
+            password="PollPass123",
+            database="polling_system"
         )
-        self.cursor = self.conn.cursor(dictionary= True)
+        self.cursor = self.conn.cursor(dictionary=True)
 
-    def execute(self, query, values=None):
-        self.cursor.execute(query, values or ())                                                                                    
-        self.conn.commit()
-
-    def fetch(self, query, values=None):
-        self.cursor.execute(query, values or ())
+    def fetch(self, query, params=None):
+        self.cursor.execute(query, params or ())
         return self.cursor.fetchall()
-    
-    def close(self):
-        self.conn.close()
+
+    def execute(self, query, params=None):
+        self.cursor.execute(query, params or ())
+        self.conn.commit()
