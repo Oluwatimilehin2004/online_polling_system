@@ -1,5 +1,5 @@
 from database import Database
-class user:
+class User:
     """User model compatible with the interactive `main.py` flow.
 
     Usage patterns supported:
