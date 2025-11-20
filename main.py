@@ -4,14 +4,29 @@ from vote import Vote
 
 def main():
     print("Welcome to the Voting App!")
-    phone_number = input("Enter your phone number: ")
-
+    
+    phone_number = input("Enter your phone_number: ")
+    
     user = User()
+    
+    # Check if user already exists (authenticated)
     if not user.authenticate(phone_number):
-        region = input("Enter your region: ")
-        age = int(input("Enter your age: "))
-        user = User(phone_number, region, age)
-        user.register()
+        print("New user registration:")
+        
+        hobbie = input("Enter your hobbie: ")
+        national_id = input("Enter your national ID: ")
+        dob = input("Enter your date of birth (YYYY-MM-DD): ")
+        
+        # Register the user
+        success = user.register_user(hobbie, phone_number, national_id, dob)
+        
+        if success:
+            print("Registration successful! OTP sent to your phone_number.")
+        else:
+            print("Registration failed. Please try again or check your inputs.")
+    else:
+        print("User authenticated! You can proceed to vote.")
+
 
     while True:
         print("\nMain Menu")
@@ -25,7 +40,7 @@ def main():
             candidate = Candidate()
             candidates = candidate.list_candidates()
             choice = int(input("Enter candidate number: "))
-            user_data = User.db.fetch("SELECT id, has_voted FROM voters WHERE phone_number = %s", (user.phone_number,))[0]
+            user_data = user.db.fetch("SELECT id, has_voted FROM voters WHERE phone_number = %s", (user.phone_number,))[0]
 
             if user_data.get('has_voted'):
                 print("You have already voted.")

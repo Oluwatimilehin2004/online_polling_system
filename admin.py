@@ -1,7 +1,7 @@
 from database import Database
 
 class Admin:
-    def _init_(self):
+    def __init__(self):
         self.db = Database()
 
     def create_poll(self, title, desc):

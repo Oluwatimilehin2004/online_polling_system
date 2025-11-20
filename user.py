@@ -1,46 +1,56 @@
+import datetime
 from database import Database
-class User:
-    """User model compatible with the interactive `main.py` flow.
+from utils import *
 
-    Usage patterns supported:
-    - user = User(); user.authenticate(phone_number)
-    - user = User(phone_number, region, age); user.register()
-    """
+
+class User:
+    """User model compatible with the interactive flow."""
 
     def __init__(self, phone_number=None, region=None, age=None):
-        self.db = Database()
+        self.db = Database()          # Database instance
         self.phone_number = phone_number
         self.region = region
         self.age = age
         self.id = None
 
-    def register(self):
-        if not self.phone_number:
-            raise ValueError("phone_number is required to register")
-
-        # Create a voter record. has_voted defaults to 0
-        self.db.execute(
-            "INSERT INTO voters (phone_number, region, age, has_voted) VALUES (%s, %s, %s, 0)",
-            (self.phone_number, self.region, self.age),
+    def register_user(self, phone, national_id, dob, hobbies):
+        """
+        Registers a user with OTP and checks for duplicates.
+        """
+        # 1️⃣ Check duplicates
+        existing_user = self.db.fetch(
+            "SELECT * FROM Users WHERE national_id=%s OR phone_number=%s",
+            (national_id, phone)
         )
-        # retrieve id
-        row = self.db.fetch("SELECT id FROM voters WHERE phone_number=%s", (self.phone_number,))
-        if row:
-            self.id = row[0].get("id")
-        print("Registration successful!")
+        if existing_user:
+            print("User with this national ID or phone already exists!")
+            return False
 
-    def authenticate(self, phone_number):
-        """Find a voter by phone_number. If found, populate self and return the voter dict; else return None."""
-        voter = self.db.fetch("SELECT * FROM voters WHERE phone_number=%s", (phone_number,))
-        if voter:
-            v = voter[0]
-            self.phone_number = v.get("phone_number")
-            self.region = v.get("region")
-            self.age = v.get("age")
-            self.id = v.get("id")
-            print("Authentication successful.")
-            return v
-        return None
+        # 2️⃣ Verify inputs
+        # if not verify_dob(dob):
+        #     return False
+        # if not verify_national_id(self.db, national_id):
+        #     return False
+        if not verify_hobbies(hobbies):
+            return False
+
+        # 3️⃣ Generate OTP
+        otp = generate_otp()
+        otp_created_at = datetime.now()
+
+        # 4️⃣ Save user with OTP
+        self.db.execute("""
+            INSERT INTO Users (full_name, phone_number, national_id, date_of_birth, hobbie, otp, otp_created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (phone, national_id, dob, hobbies, otp, otp_created_at))
+
+        # 5️⃣ Send OTP
+        send_otp(phone, otp)
+
+        print("User registered! OTP sent to phone.")
+        return True
+
+
 
     def view_profile(self, voter_id=None):
         if voter_id is None:
@@ -57,6 +67,7 @@ class User:
         profile = rows[0]
         print(profile)
 
+
     def edit_region(self, new_region):
         if not self.phone_number:
             print("No phone number associated with this user.")
@@ -64,4 +75,35 @@ class User:
         self.db.execute("UPDATE voters SET region=%s WHERE phone_number=%s", (new_region, self.phone_number))
         self.region = new_region
         print("Region updated successfully!")
+
+    def authenticate(self, phone):
+        """
+        Check if the user exists and verify OTP.
+        Returns True if authenticated, False otherwise.
+        """
+        # 1️⃣ Fetch user by phone number
+        user = self.db.fetch("SELECT * FROM Users WHERE phone_number=%s", (phone,))
+        
+        if not user:
+            # User not found → needs registration
+            return False
+        
+        user = user[0]  # fetch returns a list of dicts
+        
+        # 2️⃣ Ask for OTP input
+        otp_input = input("Enter the OTP sent to your phone: ")
+        
+        # 3️⃣ Check OTP validity (match and within time, e.g., 5 minutes)
+        otp_sent = user['otp']
+        otp_time = user['otp_created_at']
+        now = datetime.now()
+        
+        # Check if OTP is within 5 minutes
+        if otp_input == otp_sent and (now - otp_time).total_seconds() <= 300:
+            print("OTP verified successfully!")
+            return True
+        else:
+            print("Invalid or expired OTP!")
+            return False
+
 
