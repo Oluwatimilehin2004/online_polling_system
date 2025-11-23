@@ -1,5 +1,4 @@
 import datetime
-from datetime import datetime, timedelta
 from database import Database
 from utils import *
 
@@ -15,7 +14,7 @@ class User:
         self.id = None
         self.is_authenticated = False
 
-    def register_user(self, hobbies, phone, national_id, dob, region, age):
+    def register_user(self, hobbies, phone, national_id, dob, region, age, has_voted):
         """
         Registers a user and adds the information into the database.
         Returns: 
@@ -39,13 +38,13 @@ class User:
 
             # 3️⃣ Generate OTP
             otp = generate_otp()
-            otp_created_at = datetime.now()
+            otp_created_at = datetime.datetime.now()
 
             # 4️⃣ Save user with OTP
             self.db.execute("""
-                INSERT INTO Users (phone_number, national_id, date_of_birth, hobbie, otp, otp_created_at, region, age)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (phone, national_id, dob, hobbies, otp, otp_created_at, region, age))
+                INSERT INTO Users (phone_number, national_id, date_of_birth, hobbie, otp, otp_created_at, region, usr_age, has_voted)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (phone, national_id, dob, hobbies, otp, otp_created_at, region, age, has_voted))
 
             # 5️⃣ Send OTP
             send_otp(phone, otp)
@@ -84,8 +83,8 @@ class User:
             
             # 2️⃣ Check if OTP has expired (5 minutes)
             otp_time = user['otp_created_at']
-            now = datetime.now()
-            otp_expiry_time = otp_time + timedelta(minutes=5)
+            now = datetime.datetime.now()
+            otp_expiry_time = otp_time + datetime.timedelta(minutes=5)
             
             if now > otp_expiry_time:
                 print("OTP has expired! Generating new OTP...")
@@ -135,15 +134,17 @@ class User:
             print(f"Error resending OTP: {e}")
             return False
 
-    def view_profile(self, voter_id=None):
+    def view_profile(self, user_id=None):
         try:
-            if voter_id is None:
+            if user_id is None:
                 if not self.phone_number:
                     print("No user information available.")
                     return
+                # FIXED: Use 'phone' column
                 rows = self.db.fetch("SELECT * FROM Users WHERE phone_number=%s", (self.phone_number,))
             else:
-                rows = self.db.fetch("SELECT * FROM Users WHERE id=%s", (voter_id,))
+                # FIXED: Use 'usr_id' column
+                rows = self.db.fetch("SELECT * FROM Users WHERE usr_id=%s", (user_id,))
 
             if not rows:
                 print("Profile not found.")
@@ -151,11 +152,14 @@ class User:
                 
             profile = rows[0]
             print("\n--- Your Profile ---")
+            print(f"User ID: {profile.get('usr_id', 'N/A')}")
             print(f"Phone: {profile.get('phone_number', 'N/A')}")
             print(f"National ID: {profile.get('national_id', 'N/A')}")
             print(f"Date of Birth: {profile.get('date_of_birth', 'N/A')}")
-            print(f"Hobbies: {profile.get('hobbies', 'N/A')}")
+            print(f"Hobbie: {profile.get('hobbie', 'N/A')}")
             print(f"Region: {profile.get('region', 'N/A')}")
+            print(f"Age: {profile.get('usr_age', 'N/A')}")
+            print(f"Has Voted: {'Yes' if profile.get('has_voted') else 'No'}")
             
         except Exception as e:
             print(f"Error viewing profile: {e}")
@@ -166,6 +170,7 @@ class User:
                 print("No phone number associated with this user.")
                 return False
                 
+            # FIXED: Use 'phone' column
             self.db.execute("UPDATE Users SET region=%s WHERE phone_number=%s", (new_region, self.phone_number))
             self.region = new_region
             print("Region updated successfully!")
@@ -173,4 +178,31 @@ class User:
             
         except Exception as e:
             print(f"Error updating region: {e}")
+            return False
+
+    def edit_age(self, new_age):
+        try:
+            if not self.phone_number:
+                print("No phone number associated with this user.")
+                return False
+                
+            # Convert to integer if it's a string
+            if isinstance(new_age, str):
+                if not new_age.isdigit():
+                    print("Age must be a positive number.")
+                    return False
+                new_age = int(new_age)
+                
+            # Validate age is a positive number
+            if new_age <= 0:
+                print("Age must be a positive number.")
+                return False
+                
+            self.db.execute("UPDATE Users SET usr_age=%s WHERE phone_number=%s", (new_age, self.phone_number))
+            self.age = new_age
+            print("Age updated successfully!")
+            return True
+            
+        except Exception as e:
+            print(f"Error updating age: {e}")
             return False

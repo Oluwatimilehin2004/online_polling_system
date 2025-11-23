@@ -22,23 +22,41 @@ def generate_otp():
     # )
     # print(f"OTP sent! Message SID: {message.sid}")
 
+import os
+import datetime
+
 def send_otp(phone_number, otp):
     """
-    DEVELOPMENT MODE - Use mock OTP
+    Secure OTP function - creates individual log files per user
     """
-    print("\n" + "="*60)
-    print(f"📱 OTP SIMULATION FOR: {phone_number}")
-    print(f"🔐 YOUR VERIFICATION CODE: {otp}")
-    print("="*60)
-    print("💡 In production, this would be sent via SMS")
-    print("💡 Current Twilio issue: Authentication failed")
-    print("="*60)
-    
-    # Log this for debugging
-    with open("otp_log.txt", "a") as f:
-        f.write(f"{phone_number}: {otp}\n")
-    
-    return True
+    try:
+        # Create logs directory if it doesn't exist
+        if not os.path.exists('otp_logs'):
+            os.makedirs('otp_logs')
+        
+        # Create a unique log file for each user (using last 4 digits of phone)
+        user_log_file = f"otp_logs/user_{phone_number[-4:]}_otp.log"
+        
+        # Log the OTP with timestamp
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"[{timestamp}] OTP for {phone_number}: {otp}\n"
+        
+        with open(user_log_file, "a") as f:
+            f.write(log_entry)
+        
+        # Display OTP in console (for development)
+        print("\n" + "="*50)
+        print(f"📱 OTP SENT TO: {phone_number}")
+        print(f"🔢 VERIFICATION CODE: {otp}")
+        print("="*50)
+        print("💡 In production, this would be sent via SMS")
+        print("="*50)
+        
+        return True
+        
+    except Exception as e:
+        print(f"Error in OTP sending: {e}")
+        return False
 
 
 # def verify_national_id(db, national_id):

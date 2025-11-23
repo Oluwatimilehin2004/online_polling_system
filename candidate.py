@@ -33,10 +33,16 @@ class Candidate:
         self.db = Database()
 
     def list_candidates(self):
-        candidates = self.db.fetch("SELECT * FROM candidates")
+        candidates = self.db.fetch("SELECT * FROM Candidates")
         for c in candidates:
-            print(f"{c['id']}. {c['name']} ({c['vote_count']} votes)")
+            print(f"{c['cand_id']}. {c['cand_name']})")
+        return candidates
+    
+    def list_candidates_after_vote(self):
+        candidates = self.db.fetch("SELECT * FROM Candidates")
+        for c in candidates:
+            print(f"{c['cand_id']}. {c['cand_name']} ({c['vote_count']} votes)")
         return candidates
 
     def update_vote_count(self, candidate_id):
-        self.db.execute("UPDATE candidates SET vote_count = vote_count + 1 WHERE id = %s", (candidate_id,))
+        self.db.execute("UPDATE Candidates SET vote_count = vote_count + 1 WHERE id = %s", (candidate_id,))
