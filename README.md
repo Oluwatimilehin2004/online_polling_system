@@ -1,4 +1,3 @@
-```markdown
 # Voteasy - Secure Online Voting System
 
 ![Voteasy Logo](https://via.placeholder.com/150x150/4A90E2/FFFFFF?text=VE) 
@@ -56,7 +55,6 @@ Voteasy is a comprehensive online voting solution designed to provide secure, tr
 
 ## System Architecture
 
-```
 Voteasy System Architecture
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
 │   Client    │◄──►│  Application │◄──►│  Database   │
@@ -393,15 +391,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 </div>
 ```
 
-This comprehensive README provides:
-
-1. **Professional structure** with clear sections
-2. **Detailed installation instructions** with copy-paste commands
-3. **Security information** including admin credentials and OTP behavior
-4. **Troubleshooting guide** for common issues
-5. **Explanation of Twilio restrictions** specific to Rwanda
-6. **Usage examples** for both voters and admins
-7. **Technical specifications** and architecture details
-8. **Professional formatting** with proper markdown syntax
-
-The placeholder image can be replaced with your actual logo when available.
