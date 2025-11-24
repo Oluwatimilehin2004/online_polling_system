@@ -261,11 +261,11 @@ def main():
         print_header("MAIN MENU")
         
         print("\nPlease choose an option:")
-        print("1. 🗳️  Cast Your Vote")
-        print("2. 📢 View Notifications & Results")
-        print("3. 👤 View & Edit Profile")
-        print("4. 🚪 Exit Application")
-        print("5. 🔧 Admin Panel")
+        print("1.  Cast Your Vote")
+        print("2.  View Notifications & Results")
+        print("3.  View & Edit Profile")
+        print("4.  Exit Application")
+        print("5.  Admin Panel")
         
         choice = input("\n👉 Enter your choice (1-4): ").strip()
 
@@ -373,16 +373,16 @@ def admin_menu(admin):
         clear_screen()
         print_header("ADMIN PANEL")
         
-        print("1. 📋 List All Polls")
-        print("2. 📊 View Election Results") 
-        print("3. 👥 List All Candidates")
-        print("4. ➕ Add New Candidate")
-        print("5. ✏️  Edit Candidate")
-        print("6. 📝 Create New Poll")
-        print("7. ⏰ Set/Extend Voting Period")
-        print("8. 🚪 Exit Admin Panel")
+        print("1.  List All Polls")
+        print("2.  View Election Results") 
+        print("3.  List All Candidates")
+        print("4.  Add New Candidate")
+        print("5.   Edit Candidate")
+        print("6.  Create New Poll")
+        print("7.  Set/Extend Voting Period")
+        print("8.  Exit Admin Panel")
         
-        choice = input("\n👉 Choose an option (1-8): ").strip()
+        choice = input("\n Choose an option (1-8): ").strip()
         
         if choice == "1":
             admin.list_polls()
