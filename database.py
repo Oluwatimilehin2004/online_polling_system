@@ -1,5 +1,5 @@
-import mysql.connector
-from mysql.connector import Error
+import mysql.connector # type: ignore
+from mysql.connector import Error # type: ignore
 
 class Database:
     def __init__(self):
@@ -13,7 +13,6 @@ class Database:
                 # ssl_ca="certs/ca.pem"  # Uncomment if using SSL
             )
             self.cursor = self.conn.cursor(dictionary=True)
-            print("Connected to the database successfully!")
         except Error as e:
             print(f"Error connecting to MySQL: {e}")
             self.conn = None

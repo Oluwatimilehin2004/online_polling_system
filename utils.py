@@ -1,7 +1,7 @@
 import re
 import random
 from datetime import datetime
-from twilio.rest import Client
+from twilio.rest import Client # type: ignore
 
 # Twilio credentials
 TWILIO_ACCOUNT_SID = "ACa4a545739cf241fbbbbf44a506d1dc7d"
@@ -46,10 +46,10 @@ def send_otp(phone_number, otp):
         
         # Display OTP in console (for development)
         print("\n" + "="*50)
-        print(f"📱 OTP SENT TO: {phone_number}")
-        print(f"🔢 VERIFICATION CODE: {otp}")
+        print(f" OTP SENT TO: {phone_number}")
+        print(f" VERIFICATION CODE: {otp}")
         print("="*50)
-        print("💡 In production, this would be sent via SMS")
+        print(" In production, this would be sent via SMS")
         print("="*50)
         
         return True

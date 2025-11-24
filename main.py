@@ -20,24 +20,24 @@ def delayed_clear_screen(delay_seconds):
 def print_header(title):
     """Print a formatted header"""
     print("\n" + "="*60)
-    print(f"🗳️  {title:^52} 🗳️")
+    print(f"  {title:^52} ")
     print("="*60)
 
 def print_success(message):
     """Print success messages in green"""
-    print(f"\n✅ \033[92m{message}\033[0m")
+    print(f"\n \033[92m{message}\033[0m")
 
 def print_error(message):
     """Print error messages in red"""
-    print(f"\n❌ \033[91m{message}\033[0m")
+    print(f"\n \033[91m{message}\033[0m")
 
 def print_info(message):
     """Print info messages in blue"""
-    print(f"\nℹ️  \033[94m{message}\033[0m")
+    print(f"\nℹ  \033[94m{message}\033[0m")
 
 def loading_animation(message, duration=2):
     """Show a loading animation"""
-    print(f"\n⏳ {message}", end="", flush=True)
+    print(f"\n {message}", end="", flush=True)
     for _ in range(duration):
         print(".", end="", flush=True)
         time.sleep(0.5)
@@ -46,7 +46,7 @@ def loading_animation(message, duration=2):
 def get_phone_number():
     """Get and validate phone number"""
     while True:
-        phone_number = input("\n📱 Enter your phone number: ").strip()
+        phone_number = input("\n Enter your phone number: ").strip()
         if phone_number and any(char.isdigit() for char in phone_number):
             return phone_number
         print_error("Please enter a valid phone number")
@@ -58,31 +58,31 @@ def register_new_user(user, phone_number):
     
     # Get registration details
     while True:
-        hobbies = input("\n🎨 Enter your hobbies: ").strip()
+        hobbies = input("\n Enter your hobbies: ").strip()
         if hobbies:
             break
         print_error("Hobbies cannot be empty")
 
     while True:
-        region = input("\n🎨 Enter your region: ").strip()
+        region = input("\n Enter your region: ").strip()
         if region:
             break
         print_error("Region cannot be empty")
     
     while True:
-        national_id = input("\n🆔 Enter your national ID: ").strip()
+        national_id = input("\n Enter your national ID: ").strip()
         if national_id:
             break
         print_error("National ID cannot be empty")
     
     while True:
-        dob = input("\n📅 Enter your date of birth (YYYY-MM-DD): ").strip()
+        dob = input("\n Enter your date of birth (YYYY-MM-DD): ").strip()
         if dob:
             break
         print_error("Date of birth cannot be empty")
 
     while True:
-        age = input("\n📅 Enter your age: ").strip()
+        age = input("\n Enter your age: ").strip()
         if dob:
             break
         print_error("Age cannot be empty")
@@ -190,7 +190,7 @@ def handle_voting(user):
         
         while True:
             try:
-                vote_choice = int(input(f"\n👉 Enter candidate number (1-{len(candidates)}): "))
+                vote_choice = int(input(f"\n Enter candidate number (1-{len(candidates)}): "))
                 if 1 <= vote_choice <= len(candidates):
                     break
                 else:
@@ -218,7 +218,7 @@ def main():
     clear_screen()
     print_header("WELCOME TO VOTEASY - SECURE VOTING PLATFORM")
     
-    print("\n🌟 Welcome to Voteasy! Your voice matters! 🌟")
+    print("\n Welcome to Voteasy! Your voice matters! ")
     print("\nPlease have your National ID ready for verification.")
     
     # Get phone number
@@ -267,7 +267,7 @@ def main():
         print("4.  Exit Application")
         print("5.  Admin Panel")
         
-        choice = input("\n👉 Enter your choice (1-4): ").strip()
+        choice = input("\n Enter your choice (1-5): ").strip()
 
         if choice == "1":
             handle_voting(user)
@@ -277,7 +277,7 @@ def main():
             print_header("NOTIFICATIONS & RESULTS")
             
             vote = Vote()
-            print("\n📊 Current Election Results:")
+            print("\n Current Election Results:")
             print("=" * 50)
             vote.show_results()
             print("=" * 50)
@@ -288,20 +288,20 @@ def main():
             delayed_clear_screen(5)
             print_header("PROFILE MANAGEMENT")
             
-            print("\n👤 Your Profile Information:")
+            print("\n Your Profile Information:")
             print("-" * 40)
             user.view_profile()
             print("-" * 40)
             
-            print("\n📝 Edit Options:")
+            print("\n Edit Options:")
             print("1. Edit Region")
             print("2. Edit Age") 
             print("3. Back to Main Menu")
             
-            edit_choice = input("\n👉 Choose an option (1-3): ").strip()
+            edit_choice = input("\n Choose an option (1-3): ").strip()
             
             if edit_choice == "1":
-                new_region = input("📍 Enter new region: ").strip()
+                new_region = input(" Enter new region: ").strip()
                 if new_region:
                     loading_animation("Updating your region")
                     if user.edit_region(new_region):
@@ -313,7 +313,7 @@ def main():
                 time.sleep(1)
                 
             elif edit_choice == "2":
-                new_age = input("🎂 Enter new age: ").strip()
+                new_age = input(" Enter new age: ").strip()
                 if new_age:
                     loading_animation("Updating your age")
                     if user.edit_age(new_age):
@@ -334,8 +334,8 @@ def main():
         elif choice == "4":
             clear_screen()
             print_header("THANK YOU FOR USING VOTEASY")
-            print("\n🙏 Thank you for participating in our democratic process!")
-            print("🌟 Your vote makes a difference!")
+            print("\n Thank you for participating in our democratic process!")
+            print(" Your vote makes a difference!")
             print("\nExiting the application...")
             time.sleep(2)
             break
@@ -356,8 +356,8 @@ def admin_login():
     clear_screen()
     print_header("ADMIN LOGIN")
     
-    username = input("👤 Admin Username: ")
-    password = getpass.getpass("🔒 Admin Password: ")
+    username = input(" Admin Username: ")
+    password = getpass.getpass(" Admin Password: ")
     
     admin = Admin()
     if admin.authenticate(username, password):
@@ -377,7 +377,7 @@ def admin_menu(admin):
         print("2.  View Election Results") 
         print("3.  List All Candidates")
         print("4.  Add New Candidate")
-        print("5.   Edit Candidate")
+        print("5.  Edit Candidate")
         print("6.  Create New Poll")
         print("7.  Set/Extend Voting Period")
         print("8.  Exit Admin Panel")

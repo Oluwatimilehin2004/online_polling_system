@@ -138,7 +138,7 @@ class Admin:
     def list_polls(self):
         """List all polls with their status"""
         polls = self.db.fetch("SELECT * FROM Polls ORDER BY poll_id DESC")
-        print("\n📋 ALL POLLS:")
+        print("\n ALL POLLS:")
         print("=" * 80)
         current_time = datetime.now()
         
@@ -168,10 +168,10 @@ class Admin:
                 "SELECT * FROM Candidates WHERE poll_id = %s ORDER BY cand_id", 
                 (poll_id,)
             )
-            print(f"\n📋 CANDIDATES FOR POLL ID {poll_id}:")
+            print(f"\n CANDIDATES FOR POLL ID {poll_id}:")
         else:
             candidates = self.db.fetch("SELECT * FROM Candidates ORDER BY poll_id, cand_id")
-            print("\n📋 ALL CANDIDATES:")
+            print("\n ALL CANDIDATES:")
             
         print("=" * 70)
         for cand in candidates:
@@ -186,12 +186,12 @@ class Admin:
                 "SELECT cand_name, political_party, vote_count FROM Candidates WHERE poll_id = %s ORDER BY vote_count DESC",
                 (poll_id,)
             )
-            print(f"\n📊 ELECTION RESULTS FOR POLL ID {poll_id}:")
+            print(f"\n ELECTION RESULTS FOR POLL ID {poll_id}:")
         else:
             results = self.db.fetch(
                 "SELECT c.cand_name, c.political_party, c.vote_count, p.title as poll_name FROM Candidates c JOIN Polls p ON c.poll_id = p.poll_id ORDER BY c.poll_id, c.vote_count DESC"
             )
-            print("\n📊 ELECTION RESULTS (All Polls):")
+            print("\n ELECTION RESULTS (All Polls):")
             
         print("=" * 60)
         for i, r in enumerate(results, 1):

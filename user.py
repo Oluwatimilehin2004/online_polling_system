@@ -23,7 +23,7 @@ class User:
             - "EXISTING_USER" if user already exists
         """
         try:
-            # 1️⃣ Check duplicates
+            # 1️ Check duplicates
             existing_user = self.db.fetch(
                 "SELECT * FROM Users WHERE national_id=%s OR phone_number=%s",
                 (national_id, phone)
@@ -32,27 +32,27 @@ class User:
                 print("User with this national ID or phone already exists!")
                 return "EXISTING_USER"
 
-            # 2️⃣ Verify inputs
+            # 2️ Verify inputs
             if not verify_hobbies(hobbies):
                 return False
 
-            # 3️⃣ Generate OTP
+            # 3️ Generate OTP
             otp = generate_otp()
             otp_created_at = datetime.datetime.now()
 
-            # 4️⃣ Save user with OTP
+            # 4️ Save user with OTP
             self.db.execute("""
                 INSERT INTO Users (phone_number, national_id, date_of_birth, hobbie, otp, otp_created_at, region, usr_age, has_voted)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (phone, national_id, dob, hobbies, otp, otp_created_at, region, age, has_voted))
 
-            # 5️⃣ Send OTP
+            # 5️ Send OTP
             send_otp(phone, otp)
 
             print("User registered! OTP sent to phone.")
             self.phone_number = phone
             
-            # 6️⃣ IMMEDIATE OTP VERIFICATION - User must type OTP right after registration
+            # 6 IMMEDIATE OTP VERIFICATION - User must type OTP right after registration
             new_user_otp = input("Enter the OTP sent to you: ")
             if new_user_otp == otp:
                 print("OTP Verified! Registration completed successfully!")
@@ -72,7 +72,7 @@ class User:
         Returns True if authenticated, False otherwise.
         """
         try:
-            # 1️⃣ Fetch user by phone number
+            # 1️ Fetch user by phone number
             user = self.db.fetch("SELECT * FROM Users WHERE phone_number=%s", (phone,))
             
             if not user:
@@ -81,7 +81,7 @@ class User:
             
             user = user[0]  # fetch returns a list of dicts
             
-            # 2️⃣ Check if OTP has expired (5 minutes)
+            # 2️ Check if OTP has expired (5 minutes)
             otp_time = user['otp_created_at']
             now = datetime.datetime.now()
             otp_expiry_time = otp_time + datetime.timedelta(minutes=5)
@@ -97,10 +97,10 @@ class User:
                 send_otp(phone, new_otp)
                 print("New OTP sent to your phone!")
             
-            # 3️⃣ Ask for OTP input
+            # 3️ Ask for OTP input
             otp_input = input("Enter the OTP sent to your phone: ")
             
-            # 4️⃣ Verify OTP
+            # 4️ Verify OTP
             current_user = self.db.fetch("SELECT * FROM Users WHERE phone_number=%s", (phone,))[0]
             if otp_input == current_user['otp']:
                 print("OTP verified successfully!")
